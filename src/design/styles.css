@@ -1,0 +1,88 @@
+.mainWindow{
+   -fx-background-image: url("file:src/design/bg.png");
+   -fx-background-repeat: stretch;
+   -fx-background-position: center;
+}
+.labelTitle{
+   -fx-background-color: #603082;
+   -fx-font-size: 26px;
+   -fx-text-fill: white;
+   -fx-font-weight: bold;
+}
+.labelForm{
+   -fx-text-fill: black;
+   -fx-font-size: 15px;
+   -fx-font-weight: bold;
+}
+.listLabel{
+   -fx-font-weight: bold;
+   -fx-font-size: 30px;
+}
+.titlelistLabel{
+   -fx-background-color: #603082;
+   -fx-text-fill: white;
+   -fx-font-weight: bold;
+   -fx-font-size: 30px;
+}
+.addButton{
+   -fx-background-color:#603082;
+   -fx-background-radius:10;
+   -fx-text-fill:#ffff;
+   -fx-font-size:  14px;
+   -fx-font-weight:bold;
+   -fx-pref-height:40px;
+   -fx-pref-width:190px;
+}
+.applyButton{
+   -fx-background-color:#603082;
+   -fx-background-radius:10;
+   -fx-text-fill:#ffff;
+   -fx-font-size:  14px;
+   -fx-font-weight:bold;
+   -fx-pref-height:40px;
+   -fx-pref-width:220px;
+}
+.orangeButton{
+   -fx-background-color:#ec4f06;
+   -fx-background-radius:10;
+   -fx-text-fill:#ffff;
+   -fx-font-size:  14px;
+   -fx-font-weight:bold;
+   -fx-pref-height:40px;
+   -fx-pref-width:220px;
+}
+.deleteButton{
+   -fx-background-color:#e72929;
+   -fx-background-radius:10;
+   -fx-text-fill:#ffff;
+   -fx-font-size:  14px;
+   -fx-font-weight:bold;
+   -fx-pref-height:40px;
+   -fx-pref-width:190px;
+}
+.cancelButton{
+   -fx-background-radius:10;
+   -fx-font-size:  14px;
+   -fx-font-weight:bold;
+   -fx-pref-height:40px;
+   -fx-pref-width:190px;
+}
+.bottomLabelClentList{
+   -fx-text-fill: black;
+   -fx-font-size: 17px;
+   -fx-font-weight: bold;
+}
+.findClientLabel{
+   -fx-text-fill: #603082;
+   -fx-font-size: 13px;
+   -fx-font-weight: bold;
+}
+.findClientFiltrerButton{
+   -fx-background-color:#603082;
+   -fx-background-radius:10;
+   -fx-text-fill:#ffff;
+   -fx-font-size:14px;
+   -fx-font-weight:bold;
+   -fx-pref-height:17px;
+   -fx-pref-width:90px;
+}
