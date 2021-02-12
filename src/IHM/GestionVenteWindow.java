@@ -274,7 +274,7 @@ public class GestionVenteWindow {
    public GestionVenteWindow(Client cl){
       initWindow();
       currentClient = cl; 
-      titleLabel = new Label("Bonjour " + currentClient.getNom() + " " + currentClient.getPrenom());
+      titleLabel = new Label(currentClient.getNom().toUpperCase() + " " + currentClient.getPrenom());
       addColumnsToTableView();
       updateColumns();
       addEvents();

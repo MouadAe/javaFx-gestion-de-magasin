@@ -40,7 +40,7 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
          pst = connection.prepareStatement(sql);
          rs = pst.executeQuery();
          while(rs.next()){
-            list.add(new Vente(rs.getDate("date").toLocalDate(),new Client(rs.getLong("id_client"),rs.getString("nom"),rs.getString("prenom"),rs.getString("tel"),rs.getString("email"),rs.getString("adresse"))));
+            list.add(new Vente(rs.getLong("id"),rs.getDate("date").toLocalDate(),new Client(rs.getLong("id_client"),rs.getString("nom"),rs.getString("prenom"),rs.getString("tel"),rs.getString("email"),rs.getString("adresse"))));
          }
       }catch(SQLException e){ e.printStackTrace();}
       return list;
@@ -74,6 +74,7 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
          for(LigneDeCommande ldc : vente.getLigneDeCommandeList()){
          pst = connection.prepareStatement(sql);
          pst.setLong(1,ldc.getQteVendu());
+         System.out.println(vente.getId());
          pst.setLong(2,vente.getId());
          pst.setLong(3,ldc.getProduit().getId());
          pst.executeUpdate();
@@ -81,19 +82,31 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
       } catch (SQLException e) { e.printStackTrace();}
    }
 
-   @Override
-   public List<Vente> getLignesDeCommandes(Vente vente) {
-      List<Vente> list = new ArrayList<Vente>();
+   public List<Produit> getLignesDeCommandes(Vente vente) {
+      List<Produit> list = new ArrayList<Produit>();
       PreparedStatement pst = null;
       ResultSet rs;
-      String sql = "SELECT * FROM client RIGHT JOIN vente ON client.id = vente.id_client ORDER BY date";
+      String sql = "select * FROM produit where id in (select id_produit from ligne_de_commande where id_vente = ?)";
       try {
          pst = connection.prepareStatement(sql);
+         pst.setLong(1, vente.getId());
          rs = pst.executeQuery();
          while(rs.next()){
-            list.add(new Vente(rs.getDate("date").toLocalDate(),new Client(rs.getLong("id_client"),rs.getString("nom"),rs.getString("prenom"),rs.getString("tel"),rs.getString("email"),rs.getString("adresse"))));
+            list.add(new Produit(rs.getLong("id"), rs.getString("designation"),rs.getLong("qte"),rs.getDouble("prix"), rs.getDate("date").toLocalDate()));
          }
       }catch(SQLException e){ e.printStackTrace();}
       return list;
+   } 
+   public long getIDVente(){
+      PreparedStatement pst = null;
+      ResultSet rs;
+      String sql = "SELECT * FROM vente WHERE id=(SELECT max(id) FROM vente)";
+      try {
+         pst = connection.prepareStatement(sql);
+         rs = pst.executeQuery();
+         rs.next();
+         return rs.getLong("id");
+      }catch (SQLException e) { e.printStackTrace();}
+      return 0;
    }
 }

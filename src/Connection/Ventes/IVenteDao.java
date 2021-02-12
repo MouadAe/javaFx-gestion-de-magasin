@@ -8,5 +8,5 @@ import Connection.Produit.Produit;
 public interface IVenteDao extends IDAO<Vente> {
    void updateOne(long id,Produit produit);
    void addLigneDeComande(Vente vente);
-   List<Vente> getLignesDeCommandes(Vente vente);
+   // List<Vente> getLignesDeCommandes(Vente vente);
 }

@@ -19,7 +19,8 @@ public class Vente {
       LigneDeCommandeList = ligneDeCommandeList;
       this.client = client;
    }
-   public Vente(LocalDate date, Client client) {
+   public Vente(long id,LocalDate date, Client client) {
+      this.id = id;
       this.date = date;
       this.client = client;
    }  
