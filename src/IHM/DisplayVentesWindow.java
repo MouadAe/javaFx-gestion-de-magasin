@@ -82,6 +82,11 @@ public class DisplayVentesWindow {
       totalHbox.getStyleClass().add("listLabel");
       totalHbox.setAlignment(Pos.BASELINE_CENTER); 
    }
+   public void addEvents(){
+      ventesDisplayTableView.setOnMouseClicked(event -> {
+         
+      });
+   }
 
    public DisplayVentesWindow(){
       initWindow();

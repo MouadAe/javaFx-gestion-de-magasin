@@ -4,6 +4,7 @@ import Connection.Client.Client;
 import Connection.Ventes.VentesClientsListHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -65,7 +66,9 @@ public class VenteMainWindow {
       titleLabel.setAlignment(Pos.BASELINE_CENTER);
       buttonsBox.setMinWidth(window.getWidth());
       buttonsBox.setAlignment(Pos.BASELINE_CENTER);
+      // root.setSpacing(30);
       buttonsBox.setSpacing(20);
+      buttonsBox.setPadding(new Insets(20));
       addVenteToClientButton.getStyleClass().add("applyButton");
       ListVentesClientButton.getStyleClass().add("orangeButton");
    }

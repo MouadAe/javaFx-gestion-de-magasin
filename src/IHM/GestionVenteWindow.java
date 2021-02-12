@@ -74,11 +74,12 @@ public class GestionVenteWindow {
    Label produitBoxQteLabel = new Label("Quantite : ");
    TextField produitBoxQteTextField = new TextField();
 
+   HBox addProduitHbox = new HBox();
    Button addProduitButton = new Button("Ajouter au panier");
 
    Boolean produitIsClicked = false;
    HBox deleteProduitHbox = new HBox();
-   Button deleteProduitButton = new Button("supprimer du panier");
+   Button deleteLdcButton = new Button("Supprimer du panier");
 
    VBox rightSide = new VBox();
    HBox totalHbox = new HBox();
@@ -87,7 +88,9 @@ public class GestionVenteWindow {
 
    HBox enregistrer = new HBox();
    Button saveButton = new Button("Enregistrer");
+
    Boolean saveButtonIsClicked = false;
+   Boolean ldcItemIsClicked = false;
    Boolean selectedLigneCmdExist = false;
 
    private void addColumnsToTableView() {
@@ -106,18 +109,20 @@ public class GestionVenteWindow {
 
       leftSide.getChildren().addAll(venteBox, produitsTableView);
       leftSide.setSpacing(30);
-      // rightSide.setSpacing(30);
+      rightSide.setSpacing(30);
 
       venteBox.getChildren().addAll(venteBoxTitle, venteBoxDate);
       
       // leftSide.getChildren().addAll(produitBox);
       produitBox.getChildren().addAll(produitBoxDesignation, produitBoxPrix);
       qteHbox.getChildren().addAll(produitBoxQteLabel,produitBoxQteTextField);
-      produitBox.getChildren().addAll(qteHbox,addProduitButton);
+      produitBox.getChildren().addAll(qteHbox);
       
       rightSide.getChildren().addAll(ligneDeCommandeTableView,totalHbox);
       totalHbox.getChildren().addAll(totalDesLignesDeCommandesLabel,totalDesLignesDeCommandesValue);
-      deleteProduitHbox.getChildren().add(deleteProduitButton);
+
+      addProduitHbox.getChildren().add(addProduitButton);
+      deleteProduitHbox.getChildren().add(deleteLdcButton);
       enregistrer.getChildren().add(saveButton);
    }
 
@@ -155,8 +160,8 @@ public class GestionVenteWindow {
       lcSousTotalColumn.setPrefWidth(100);
    }
    private void initWindow(){
-      window.setWidth(1300);
-      window.setHeight(850);
+      window.setWidth(1400);
+      window.setHeight(890);
       window.setTitle("Liste des produits");
       window.getIcons().add(new Image("file:src/design/icon.PNG"));
       window.setScene(scene);
@@ -170,15 +175,23 @@ public class GestionVenteWindow {
       rightSide.setMinWidth((window.getWidth()/2) - 20);
       enregistrer.setMinWidth(window.getWidth());
       enregistrer.setAlignment(Pos.BASELINE_CENTER);
+      venteBox.getStyleClass().add("produitsVente");
       venteBox.setAlignment(Pos.BASELINE_CENTER);
+      produitBox.getStyleClass().add("produitsVente");
       produitBox.setAlignment(Pos.BASELINE_CENTER);
+      qteHbox.getStyleClass().add("produitsVente");
       qteHbox.setAlignment(Pos.BASELINE_CENTER);
       produitBox.setAlignment(Pos.BASELINE_CENTER);
       qteHbox.setAlignment(Pos.BASELINE_CENTER);
+      totalHbox.getStyleClass().add("produitsVente");
       totalHbox.setAlignment(Pos.BASELINE_CENTER);
+      addProduitButton.getStyleClass().add("addProduit");
+      addProduitHbox.setAlignment(Pos.BASELINE_CENTER);
       // deleteProduitHbox.setMinWidth(window.getWidth());
+      deleteLdcButton.getStyleClass().add("deleteProduitVente");
       deleteProduitHbox.setAlignment(Pos.BASELINE_CENTER);
 
+      saveButton.getStyleClass().add("enregistrerVente");
       // venteBox.setSpacing(40); 
    }
    private void addEvents() {
@@ -188,7 +201,7 @@ public class GestionVenteWindow {
          produitBoxDesignation.setText("Designation : " + selectedProduit.getDesignation());
          produitBoxPrix.setText("Prix unitaire: " + selectedProduit.getPrix());
          if(!produitIsClicked){
-            leftSide.getChildren().add(produitBox);
+            leftSide.getChildren().addAll(produitBox,addProduitHbox);
          } 
          produitIsClicked = true;
       });
@@ -238,7 +251,24 @@ public class GestionVenteWindow {
       ligneDeCommandeTableView.setOnMouseClicked((MouseEvent event) -> {
          if (event.getClickCount() >= 1)
             selectedLigneDeCommande = ligneDeCommandeTableView.getSelectionModel().getSelectedItem();
-         rightSide.getChildren().add(deleteProduitHbox);
+         if(!ldcItemIsClicked) rightSide.getChildren().add(deleteProduitHbox);
+         ldcItemIsClicked = true;
+      });
+      deleteLdcButton.setOnAction( event -> {
+         for(Produit p : listeDesProduits)
+         if(p.getId() == selectedLigneDeCommande.getProduit().getId()){
+            p.setQte(p.getQte() + selectedLigneDeCommande.getQteVendu());
+            currentVente.getLigneDeCommandeList().remove(selectedLigneDeCommande);
+            break;
+         }
+         totalDesLignesDeCommandesValue.setText(currentVente.getTotal()+"");
+         ligneDeCommandeObservableList.clear();
+         ligneDeCommandeObservableList = FXCollections.observableArrayList(currentVente.getLigneDeCommandeList());
+         ligneDeCommandeTableView.setItems(ligneDeCommandeObservableList);
+
+         produitsObservableList.clear();
+         produitsObservableList = FXCollections.observableArrayList(listeDesProduits);
+         produitsTableView.setItems(produitsObservableList);
       });
    }
    public GestionVenteWindow(Client cl){
@@ -248,7 +278,6 @@ public class GestionVenteWindow {
       addColumnsToTableView();
       updateColumns();
       addEvents();
-      // handler.displayProduitsListWindow();
       addNodesToPane();
       addStylesToNodes();
       window.show();
