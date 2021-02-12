@@ -77,18 +77,18 @@ public class GestionVenteWindow {
    HBox addProduitHbox = new HBox();
    Button addProduitButton = new Button("Ajouter au panier");
 
-   Boolean produitIsClicked = false;
    HBox deleteProduitHbox = new HBox();
    Button deleteLdcButton = new Button("Supprimer du panier");
-
+   
    VBox rightSide = new VBox();
    HBox totalHbox = new HBox();
    Label totalDesLignesDeCommandesLabel = new Label("Total du panier : ");
    Label totalDesLignesDeCommandesValue = new Label("0");
-
+   
    HBox enregistrer = new HBox();
    Button saveButton = new Button("Enregistrer");
-
+   
+   Boolean produitIsClicked = false;
    Boolean saveButtonIsClicked = false;
    Boolean ldcItemIsClicked = false;
    Boolean selectedLigneCmdExist = false;
@@ -162,7 +162,7 @@ public class GestionVenteWindow {
    private void initWindow(){
       window.setWidth(1400);
       window.setHeight(890);
-      window.setTitle("Liste des produits");
+      window.setTitle("Nouvelle vente");
       window.getIcons().add(new Image("file:src/design/icon.PNG"));
       window.setScene(scene);
    }
@@ -227,10 +227,10 @@ public class GestionVenteWindow {
             ligneDeCommandeObservableList.clear();
          }
          if(!selectedLigneCmdExist)
-            lignesDeCommandes.add(new LigneDeCommande(0,selectedProduit,Long.valueOf(produitBoxQteTextField.getText()),currentVente));
+            lignesDeCommandes.add(new LigneDeCommande(selectedProduit,Long.valueOf(produitBoxQteTextField.getText()),currentVente));
 
-         currentVente = new Vente(0, venteBoxDate.getValue(),lignesDeCommandes,currentClient);
-
+         currentVente = new Vente(venteBoxDate.getValue(),lignesDeCommandes,currentClient);
+         for(LigneDeCommande ldc : currentVente.getLigneDeCommandeList()) ldc.setVente(currentVente);
          ligneDeCommandeObservableList = FXCollections.observableArrayList(currentVente.getLigneDeCommandeList());
          ligneDeCommandeTableView.setItems(ligneDeCommandeObservableList);
 

@@ -40,7 +40,7 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
          pst = connection.prepareStatement(sql);
          rs = pst.executeQuery();
          while(rs.next()){
-            list.add(new Vente(rs.getLong("id"),rs.getDate("date").toLocalDate(),new Client(rs.getLong("id_client"),rs.getString("nom"),rs.getString("prenom"),rs.getString("tel"),rs.getString("email"),rs.getString("adresse"))));
+            list.add(new Vente(rs.getDate("date").toLocalDate(),new Client(rs.getLong("id_client"),rs.getString("nom"),rs.getString("prenom"),rs.getString("tel"),rs.getString("email"),rs.getString("adresse"))));
          }
       }catch(SQLException e){ e.printStackTrace();}
       return list;
@@ -67,15 +67,33 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
    }
 
    @Override
-   public void addLigneDeComande(LigneDeCommande ldc) {
+   public void addLigneDeComande(Vente vente){
       PreparedStatement pst = null;
       String sql = "insert into ligne_de_commande(qteVendu,id_vente,id_produit) values (?,?,?)";
       try {
+         for(LigneDeCommande ldc : vente.getLigneDeCommandeList()){
          pst = connection.prepareStatement(sql);
          pst.setLong(1,ldc.getQteVendu());
-         pst.setLong(2,ldc.getVente().getId());
+         pst.setLong(2,vente.getId());
          pst.setLong(3,ldc.getProduit().getId());
          pst.executeUpdate();
+         }
       } catch (SQLException e) { e.printStackTrace();}
+   }
+
+   @Override
+   public List<Vente> getLignesDeCommandes(Vente vente) {
+      List<Vente> list = new ArrayList<Vente>();
+      PreparedStatement pst = null;
+      ResultSet rs;
+      String sql = "SELECT * FROM client RIGHT JOIN vente ON client.id = vente.id_client ORDER BY date";
+      try {
+         pst = connection.prepareStatement(sql);
+         rs = pst.executeQuery();
+         while(rs.next()){
+            list.add(new Vente(rs.getDate("date").toLocalDate(),new Client(rs.getLong("id_client"),rs.getString("nom"),rs.getString("prenom"),rs.getString("tel"),rs.getString("email"),rs.getString("adresse"))));
+         }
+      }catch(SQLException e){ e.printStackTrace();}
+      return list;
    }
 }

@@ -13,14 +13,13 @@ public class Vente {
    private double total;
    private Client client;
    
-   public Vente(long id, LocalDate date, List<LigneDeCommande> ligneDeCommandeList, Client client) {
-      this.id = id;
+   public Vente(LocalDate date, List<LigneDeCommande> ligneDeCommandeList, Client client) {
+      // this.id = id;
       this.date = date;
       LigneDeCommandeList = ligneDeCommandeList;
       this.client = client;
    }
-   public Vente(long id, LocalDate date, Client client) {
-      this.id = id;
+   public Vente(LocalDate date, Client client) {
       this.date = date;
       this.client = client;
    }  

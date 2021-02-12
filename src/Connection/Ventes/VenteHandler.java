@@ -43,13 +43,17 @@ public class VenteHandler {
    public void addLignesDeCommande(Vente vente){
       IVenteDao vDao = new VenteDaoImpl();
       vDao.add(vente);
-      for(LigneDeCommande ldc :vente.getLigneDeCommandeList()){
-         ldc.setVente(vente);
-         vDao.addLigneDeComande(ldc);
-      }
+      // vdao.getAll();
+      vDao.addLigneDeComande(vente);
    }
+   // DisplayVentesWindow :
    public void displayListVentes(){
       IVenteDao vDao = new VenteDaoImpl();
       dispalyVentesWindow.ventesDisplayTableView.setItems(FXCollections.observableArrayList(vDao.getAll()));
    } 
+   public void displayLdcOfVente(Vente vente){
+      IVenteDao vDao = new VenteDaoImpl();
+      dispalyVentesWindow.ligneDeCommandeTableView.setItems(FXCollections.observableArrayList());
+
+   }
 }

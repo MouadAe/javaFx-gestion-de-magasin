@@ -2,6 +2,7 @@ package IHM;
 
 import java.time.LocalDate;
 
+import Connection.Ventes.LigneDeCommande;
 import Connection.Ventes.Vente;
 import Connection.Ventes.VenteHandler;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,25 +28,38 @@ public class DisplayVentesWindow {
    Scene scene = new Scene(root);
    Label titleLabel = new Label("Liste de ventes");
    HBox totalHbox = new HBox();
+   TableColumn<Vente,String> idColumn = new TableColumn<>("id ");  
    TableColumn<Vente,String> nomColumn = new TableColumn<>("Nom ");  
    TableColumn<Vente,String> prenomColumn = new TableColumn<>("Prenom ");   
    TableColumn<Vente,LocalDate> dateColumn = new TableColumn<>("Date");
-
-   VenteHandler handler = new VenteHandler(this);
-
    public TableView<Vente> ventesDisplayTableView = new TableView<>();
    public ObservableList<Vente> ventesObservableList = FXCollections.observableArrayList();
+
+   TableColumn<LigneDeCommande, String> lcDesignationColumn = new TableColumn<>("Designation");
+   TableColumn<LigneDeCommande, Double> lcPrixColumn = new TableColumn<>("Prix");
+   TableColumn<LigneDeCommande, Integer> lcQteColumn = new TableColumn<>("QteVendu");
+   TableColumn<LigneDeCommande, Double> lcSousTotalColumn = new TableColumn<>("SousTotal");
+   public TableView<LigneDeCommande> ligneDeCommandeTableView = new TableView<>();
+   // public ObservableList<LigneDeCommande> ligneDeCommandeObservableList = FXCollections.observableArrayList();
+
+   VenteHandler handler = new VenteHandler(this);
+   Vente currentVente;
    
+
    private void addColumnsToTableView(){
-      ventesDisplayTableView.getColumns().addAll(dateColumn,nomColumn,prenomColumn);
+      ventesDisplayTableView.getColumns().addAll(idColumn,dateColumn,nomColumn,prenomColumn);
       ventesDisplayTableView.setItems(ventesObservableList);
+
+      ligneDeCommandeTableView.getColumns().addAll(lcDesignationColumn, lcPrixColumn, lcQteColumn, lcSousTotalColumn);
+
    }
    private void addNodesToPane(){
-      // totalHbox.getChildren().addAll(totalLabel,totalLabelValue);
       root.getChildren().addAll(titleLabel,ventesDisplayTableView);
    }
 
    private void updateColumns(){
+      idColumn.setCellValueFactory(new PropertyValueFactory("id"));
+      idColumn.setPrefWidth(100);
       dateColumn.setCellValueFactory(new PropertyValueFactory("date"));
       dateColumn.setPrefWidth(200);
       nomColumn.setCellValueFactory(
@@ -69,8 +83,8 @@ public class DisplayVentesWindow {
    }
    private void initWindow(){
       window.setWidth(820);
-      window.setHeight(550);
-      window.setTitle("Liste des produits");
+      window.setHeight(890);
+      window.setTitle("Liste des ventes");
       window.getIcons().add(new Image("file:src/design/icon.PNG"));
       window.setScene(scene);
    }
@@ -84,7 +98,8 @@ public class DisplayVentesWindow {
    }
    public void addEvents(){
       ventesDisplayTableView.setOnMouseClicked(event -> {
-         
+         currentVente = ventesDisplayTableView.getSelectionModel().getSelectedItem();
+         handler.displayLdcOfVente(currentVente);
       });
    }
 

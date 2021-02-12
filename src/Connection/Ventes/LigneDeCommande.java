@@ -9,8 +9,7 @@ public class LigneDeCommande {
    private double sousTotal;
    private Vente vente;
 
-   public LigneDeCommande(long id, Produit produit, long qteVendu, Vente vente) {
-      this.id = id;
+   public LigneDeCommande( Produit produit, long qteVendu, Vente vente) {
       this.produit = produit;
       this.qteVendu = qteVendu;
       this.vente = vente;
