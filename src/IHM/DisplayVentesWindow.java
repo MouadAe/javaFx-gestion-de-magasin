@@ -1,11 +1,13 @@
 package IHM;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import Connection.Produit.Produit;
 import Connection.Ventes.LigneDeCommande;
 import Connection.Ventes.Vente;
 import Connection.Ventes.VenteHandler;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -37,9 +39,9 @@ public class DisplayVentesWindow {
    public TableView<Vente> ventesDisplayTableView = new TableView<>();
    public ObservableList<Vente> ventesObservableList = FXCollections.observableArrayList();
 
-   TableColumn<Produit, String> prodDesignationColumn = new TableColumn<>("Designation");
-   TableColumn<Produit, Double> prodDateColumn = new TableColumn<>("Date");
-   public TableView<Produit> produitTableView = new TableView<>();
+   TableColumn<LigneDeCommande, String> ldcDesignationColumn = new TableColumn<>("Designation");
+   TableColumn<LigneDeCommande, Double> ldcQteVenduColumn = new TableColumn<>("Quantite vendu");
+   public TableView<LigneDeCommande> ldcTableView = new TableView<>();
    // public ObservableList<LigneDeCommande> ligneDeCommandeObservableList = FXCollections.observableArrayList();
 
    VenteHandler handler = new VenteHandler(this);
@@ -50,12 +52,12 @@ public class DisplayVentesWindow {
       ventesDisplayTableView.getColumns().addAll(idColumn,dateColumn,nomColumn,prenomColumn);
       ventesDisplayTableView.setItems(ventesObservableList);
 
-      produitTableView.getColumns().addAll(prodDesignationColumn, prodDateColumn);
+      ldcTableView.getColumns().addAll(ldcDesignationColumn,ldcQteVenduColumn);
 
    }
    private void addNodesToPane(){
       root.getChildren().addAll(titleLabel,ventesDisplayTableView);
-      root.getChildren().add(produitTableView);
+      root.getChildren().add(ldcTableView);
    }
 
    private void updateColumns(){
@@ -82,10 +84,17 @@ public class DisplayVentesWindow {
             });
       prenomColumn.setPrefWidth(250);
 
-      prodDateColumn.setCellValueFactory(new PropertyValueFactory("date"));
-      prodDateColumn.setPrefWidth(100);
-      prodDesignationColumn.setCellValueFactory(new PropertyValueFactory("designation"));
-      prodDesignationColumn.setPrefWidth(200);
+      ldcDesignationColumn.setCellValueFactory(
+         (Callback<CellDataFeatures<LigneDeCommande, String>, ObservableValue<String>>) 
+         new Callback<CellDataFeatures<LigneDeCommande, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<LigneDeCommande, String> data) {
+               return new SimpleStringProperty(data.getValue().getProduit().getDesignation());
+            }   
+         });
+      ldcDesignationColumn.setPrefWidth(200);
+      ldcQteVenduColumn.setCellValueFactory(new PropertyValueFactory("QteVendu"));
+      ldcQteVenduColumn.setPrefWidth(200);
 
    }
    private void initWindow(){
@@ -107,11 +116,10 @@ public class DisplayVentesWindow {
       ventesDisplayTableView.setOnMouseClicked((MouseEvent event) -> {
          if (event.getClickCount() >= 1){
             currentVente = ventesDisplayTableView.getSelectionModel().getSelectedItem();
-            System.out.println(currentVente.getId());
+            // System.out.println(currentVente);
+            // System.out.println(currentVente.getId());
             handler.displayLdcOfVente(currentVente);
-
          }
-
       });
    }
 
@@ -119,6 +127,7 @@ public class DisplayVentesWindow {
       initWindow();
       addStylesToNodes();
       updateColumns();
+      addEvents();
       addColumnsToTableView();
       handler.displayListVentes();
       addNodesToPane();

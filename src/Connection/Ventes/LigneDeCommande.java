@@ -53,4 +53,9 @@ public class LigneDeCommande {
       this.id = id;
    }
 
+   public LigneDeCommande(Produit produit, long qteVendu) {
+      this.produit = produit;
+      this.qteVendu = qteVendu;
+   }
+
 }

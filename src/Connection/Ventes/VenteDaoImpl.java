@@ -35,7 +35,8 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
       List<Vente> list = new ArrayList<Vente>();
       PreparedStatement pst = null;
       ResultSet rs;
-      String sql = "SELECT * FROM client RIGHT JOIN vente ON client.id = vente.id_client ORDER BY date";
+      // String sql = "SELECT * FROM client RIGHT JOIN vente ON client.id = vente.id_client ORDER BY date";
+      String sql = "SELECT * FROM vente RIGHT JOIN client ON vente.id_client = client.id where vente.id is not null";
       try {
          pst = connection.prepareStatement(sql);
          rs = pst.executeQuery();
@@ -74,7 +75,6 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
          for(LigneDeCommande ldc : vente.getLigneDeCommandeList()){
          pst = connection.prepareStatement(sql);
          pst.setLong(1,ldc.getQteVendu());
-         System.out.println(vente.getId());
          pst.setLong(2,vente.getId());
          pst.setLong(3,ldc.getProduit().getId());
          pst.executeUpdate();
@@ -82,17 +82,18 @@ public class VenteDaoImpl extends AbstractDAO implements IVenteDao {
       } catch (SQLException e) { e.printStackTrace();}
    }
 
-   public List<Produit> getLignesDeCommandes(Vente vente) {
-      List<Produit> list = new ArrayList<Produit>();
+   public List<LigneDeCommande> getLignesDeCommandes(Vente vente) {
+      List<LigneDeCommande> list = new ArrayList<LigneDeCommande>();
       PreparedStatement pst = null;
       ResultSet rs;
-      String sql = "select * FROM produit where id in (select id_produit from ligne_de_commande where id_vente = ?)";
-      try {
+      String sql = "select * from produit right join ligne_de_commande on produit.id = ligne_de_commande.id_produit where ligne_de_commande.id_vente = ?";
+      // select * FROM produit where id in (select id_produit from ligne_de_commande where id_vente = 54)
+         try {
          pst = connection.prepareStatement(sql);
          pst.setLong(1, vente.getId());
          rs = pst.executeQuery();
          while(rs.next()){
-            list.add(new Produit(rs.getLong("id"), rs.getString("designation"),rs.getLong("qte"),rs.getDouble("prix"), rs.getDate("date").toLocalDate()));
+            list.add(new LigneDeCommande(new Produit(rs.getString("designation")),rs.getLong("qteVendu")));
          }
       }catch(SQLException e){ e.printStackTrace();}
       return list;

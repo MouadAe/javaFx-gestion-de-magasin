@@ -18,7 +18,9 @@ public class Produit {
       this.date = date;
       this.total = qte * prix;
    }
-
+   public Produit(String designation){
+      this.designation = designation;
+   }
    public long getId() {
       return id;
    }
